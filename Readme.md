@@ -5,6 +5,9 @@
 * [Default.aspx.cs](./CS/WebSite/Default.aspx.cs) (VB: [Default.aspx.vb](./VB/WebSite/Default.aspx.vb))
 <!-- default file list end -->
 # How to emulate ASPxGridView command button functionality
+<!-- run online -->
+**[[Run Online]](https://codecentral.devexpress.com/e4664/)**
+<!-- run online end -->
 
 
 <p>This example shows how to use different controls instead of built-in ASPxGridView command buttons with the same functionality. It is prohibited to modify data to preserve the example integrity. You can download this sample and run it locally.<br /><br /><strong>ASP.NET MVC Version</strong>: <a href="https://www.devexpress.com/Support/Center/p/E4058">How to emulate the Command Column with a data column DataItemTemplate</a></p>
