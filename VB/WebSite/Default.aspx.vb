@@ -1,8 +1,7 @@
 Imports System
 Imports System.Web.UI
 Imports System.Web.UI.WebControls
-Imports DevExpress.Web.ASPxEditors
-Imports DevExpress.Web.ASPxGridView
+Imports DevExpress.Web
 
 Namespace Test
 
