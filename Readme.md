@@ -1,48 +1,105 @@
-<!-- default badges list -->
-![](https://img.shields.io/endpoint?url=https://codecentral.devexpress.com/api/v1/VersionRange/128539910/22.1.3%2B)
-[![](https://img.shields.io/badge/Open_in_DevExpress_Support_Center-FF7200?style=flat-square&logo=DevExpress&logoColor=white)](https://supportcenter.devexpress.com/ticket/details/E4664)
-[![](https://img.shields.io/badge/📖_How_to_use_DevExpress_Examples-e9f6fc?style=flat-square)](https://docs.devexpress.com/GeneralInformation/403183)
-<!-- default badges end -->
-<!-- default file list -->
-*Files to look at*:
-
-* [Default.aspx](./CS/WebSite/Default.aspx) (VB: [Default.aspx](./VB/WebSite/Default.aspx))
-* [Default.aspx.cs](./CS/WebSite/Default.aspx.cs) (VB: [Default.aspx.vb](./VB/WebSite/Default.aspx.vb))
-<!-- default file list end -->
-# How to emulate ASPxGridView command button functionality
+# Grid View for ASP.NET Web Forms - How to emulate command button functionality
 <!-- run online -->
 **[[Run Online]](https://codecentral.devexpress.com/e4664/)**
 <!-- run online end -->
 
+This example demonstrates how to add custom buttons to a templated column and configure the grid's cell edit functionality based on the edit mode. You can choose the edit mode from the combo box editor.
 
-<p>This example shows how to use different controls instead of built-in ASPxGridView command buttons with the same functionality. It is prohibited to modify data to preserve the example integrity. You can download this sample and run it locally.<br /><br /><strong>ASP.NET MVC Version</strong>: <a href="https://www.devexpress.com/Support/Center/p/E4058">How to emulate the Command Column with a data column DataItemTemplate</a></p>
+![Emulate Command Buttons](commandButtons.png)
 
+## Overview
 
-<h3>Description</h3>
+1. Specify a column' [DataItemTemplate](https://docs.devexpress.com/AspNet/DevExpress.Web.GridViewDataColumn.DataItemTemplate) property and add custom **New**, **Edit**, and **Delete** buttons to the template. For **Edit** and **Delete** buttons, handle their server-side `Init` events to access the button's template container and get the container's visible index. For all buttons, handle their client-side `Click` events and call a corresponding grid's method to edit data.
 
-<p>It is necessary to modify the project to support CRUD operations.</p>
-<p>Remove the following code block from the Default.aspx file:</p>
-<code lang="aspx">OnDeleting="dataSource_Modifying" OnInserting="dataSource_Modifying" OnUpdating="dataSource_Modifying"
+    ```aspx
+    <dx:GridViewDataColumn Caption="Commands">
+        <DataItemTemplate>
+            <table>
+                <tr>
+                    <td>
+                        <dx:ASPxButton ID="btnNew" runat="server" Text="New" AutoPostBack="false">
+                            <ClientSideEvents Click="function() { grid.AddNewRow(); }" />
+                        </dx:ASPxButton>
+                    </td>
+                    <td>
+                        <dx:ASPxButton ID="btnEdit" runat="server" Text="Edit" AutoPostBack="false"
+                            OnInit="btnEdit_Init" />
+                    </td>
+                    <td>
+                        <dx:ASPxButton ID="btnDelete" runat="server" Text="Delete" AutoPostBack="false"
+                            OnInit="btnDelete_Init" />
+                    </td>
+                </tr>
+            </table>
+        </DataItemTemplate>
+        <!-- ... -->
+    </dx:GridViewDataColumn>
+    ```
 
-</code>
-<p>and remove the following code fragment from the Default.aspx.cs file:</p>
-<code lang="cs">String ModificationErrorText {
-	get {
-        	return
-                "Data modifications are not supplied by this demo.";
-            }
-}
+    ```csharp
+    protected void btnEdit_Init(object sender, EventArgs e) {
+        var btn = (sender as ASPxButton);
+        var nc = btn.NamingContainer as GridViewDataItemTemplateContainer;
+        btn.ClientSideEvents.Click = String.Format("function() {{ grid.StartEditRow({0}); }}", nc.VisibleIndex);
+    }
 
-protected void dataSource_Modifying(object sender, SqlDataSourceCommandEventArgs e) {
-	e.Cancel = true;
-        throw new NotSupportedException(ModificationErrorText);
-}
+    protected void btnDelete_Init(object sender, EventArgs e) {
+        var btn = (sender as ASPxButton);
+        var nc = btn.NamingContainer as GridViewDataItemTemplateContainer;
+        btn.ClientSideEvents.Click = String.Format("function() {{ grid.DeleteRow({0}); }}", nc.VisibleIndex);
+    }
+    ```
 
-</code>
-<p>or the Default.aspx.vb file:</p>
-&lt;para&gt;&lt;code lang="vb"&gt;Private ReadOnly Property ModificationErrorText() As String &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Return "Data modifications are not supplied by this demo." &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End Get <br /> End Property
-<p>Protected Sub dataSource_Modifying(ByVal sender As Object, ByVal e As SqlDataSourceCommandEventArgs) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.Cancel = True &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Throw New NotSupportedException(ModificationErrorText) <br /> End Sub</p>
+2. Specify a column's [EditItemTemplate](https://docs.devexpress.com/AspNet/DevExpress.Web.GridViewDataColumn.EditItemTemplate) property and add custom **Update** and **Cancel** buttons to the template. Handle the client-side `Click` events and call the grid's `UpdateEdit` and `CancelEdit` in the handlers.
 
-<br/>
+    ```aspx
+    <dx:GridViewDataColumn Caption="Commands">
+        <!-- ... -->
+        <EditItemTemplate>
+            <table>
+                <tr>
+                    <td>
+                        <dx:ASPxButton ID="btnUpdate" runat="server" Text="Update" AutoPostBack="false">
+                            <ClientSideEvents Click="function() { grid.UpdateEdit(); }" />
+                        </dx:ASPxButton>
+                    </td>
+                    <td>
+                        <dx:ASPxButton ID="btnCancel" runat="server" Text="Cancel" AutoPostBack="false">
+                            <ClientSideEvents Click="function() { grid.CancelEdit(); }" />
+                        </dx:ASPxButton>
+                    </td>
+                </tr>
+            </table>
+        </EditItemTemplate>
+        <EditFormSettings Visible="false" />
+    </dx:GridViewDataColumn>
+    ```
 
+3. For the grid's edit form mode, specify the control's [Templates.EditForm](v) property and set the [ReplacementType](https://docs.devexpress.com/AspNet/DevExpress.Web.ASPxGridViewTemplateReplacement.ReplacementType) property to `EditFormEditors`. Add custom **Update** and **Cancel** buttons to the template and handle their client-side `Click` events as described in the previous step.
 
+    ```aspx
+    <dx:ASPxGridView ID="grid" runat="server" DataSourceID="dataSource" KeyFieldName="CustomerID" ...>
+        <!-- ... -->
+        <Templates>
+            <EditForm>
+                <dx:ASPxGridViewTemplateReplacement ID="Editors" runat="server"
+                    ReplacementType="EditFormEditors" />
+                <!-- ... -->
+            </EditForm>
+        </Templates>
+    </dx:ASPxGridView>
+    ```
+
+## Files to Review
+
+* [Default.aspx](./CS/WebSite/Default.aspx) (VB: [Default.aspx](./VB/WebSite/Default.aspx))
+* [Default.aspx.cs](./CS/WebSite/Default.aspx.cs) (VB: [Default.aspx.vb](./VB/WebSite/Default.aspx.vb))
+
+## Documentation
+
+* [Edit Data in Grid](https://docs.devexpress.com/AspNet/3712/components/grid-view/concepts/edit-data)
+* [Grid View Templates](https://docs.devexpress.com/AspNet/3718/components/grid-view/concepts/templates)
+
+## More Examples
+
+* [Grid View for ASP.NET MVC - How to emulate command button functionality](https://github.com/DevExpress-Examples/how-to-emulate-the-command-column-with-a-data-column-dataitemtemplate-e4058)
