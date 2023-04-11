@@ -3,13 +3,13 @@
 **[[Run Online]](https://codecentral.devexpress.com/e4664/)**
 <!-- run online end -->
 
-This example demonstrates how to add custom buttons to a templated column and configure the grid's cell edit functionality based on the edit mode. You can choose the edit mode from the combo box editor.
+This example demonstrates how to add custom buttons to a templated column and configure the grid's cell edit functionality based on the edit mode. You can choose the edit mode in the combo box editor.
 
 ![Emulate Command Buttons](commandButtons.png)
 
 ## Overview
 
-1. Specify a column' [DataItemTemplate](https://docs.devexpress.com/AspNet/DevExpress.Web.GridViewDataColumn.DataItemTemplate) property and add custom **New**, **Edit**, and **Delete** buttons to the template. For **Edit** and **Delete** buttons, handle their server-side `Init` events to access the button's template container and get the container's visible index. For all buttons, handle their client-side `Click` events and call a corresponding grid's method to edit data.
+1. Specify a column's [DataItemTemplate](https://docs.devexpress.com/AspNet/DevExpress.Web.GridViewDataColumn.DataItemTemplate) property and add custom **New**, **Edit**, and **Delete** buttons to the template. For **Edit** and **Delete** buttons, handle their server-side `Init` events to access a button's template container and get the container's visible index. For all buttons, handle their client-side `Click` events and call the corresponding grid's method to edit data.
 
     ```aspx
     <dx:GridViewDataColumn Caption="Commands">
@@ -50,7 +50,7 @@ This example demonstrates how to add custom buttons to a templated column and co
     }
     ```
 
-2. Specify a column's [EditItemTemplate](https://docs.devexpress.com/AspNet/DevExpress.Web.GridViewDataColumn.EditItemTemplate) property and add custom **Update** and **Cancel** buttons to the template. Handle the client-side `Click` events and call the grid's `UpdateEdit` and `CancelEdit` in the handlers.
+2. Specify a column's [EditItemTemplate](https://docs.devexpress.com/AspNet/DevExpress.Web.GridViewDataColumn.EditItemTemplate) property and add custom **Update** and **Cancel** buttons to the template. Handle client-side `Click` events and call the grid's `UpdateEdit` and `CancelEdit` methods in handlers.
 
     ```aspx
     <dx:GridViewDataColumn Caption="Commands">
