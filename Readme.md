@@ -75,7 +75,7 @@ This example demonstrates how to add custom buttons to a templated column and co
     </dx:GridViewDataColumn>
     ```
 
-3. For the grid's edit form mode, specify the control's [Templates.EditForm](v) property and set the [ReplacementType](https://docs.devexpress.com/AspNet/DevExpress.Web.ASPxGridViewTemplateReplacement.ReplacementType) property to `EditFormEditors`. Add custom **Update** and **Cancel** buttons to the template and handle their client-side `Click` events as described in the previous step.
+3. To configure the grid's edit functionality in edit form mode, specify the control's [Templates.EditForm](https://docs.devexpress.com/AspNet/DevExpress.Web.GridViewTemplates.EditForm) property and set the [ReplacementType](https://docs.devexpress.com/AspNet/DevExpress.Web.ASPxGridViewTemplateReplacement.ReplacementType) property to `EditFormEditors`. Add custom **Update** and **Cancel** buttons to the template and handle their client-side `Click` events as described in the previous step.
 
     ```aspx
     <dx:ASPxGridView ID="grid" runat="server" DataSourceID="dataSource" KeyFieldName="CustomerID" ...>
