@@ -4,9 +4,6 @@
 [![](https://img.shields.io/badge/📖_How_to_use_DevExpress_Examples-e9f6fc?style=flat-square)](https://docs.devexpress.com/GeneralInformation/403183)
 <!-- default badges end -->
 # Grid View for ASP.NET Web Forms - How to emulate command button functionality
-<!-- run online -->
-**[[Run Online]](https://codecentral.devexpress.com/128539910/)**
-<!-- run online end -->
 
 This example demonstrates how to add custom buttons to a templated column and configure the grid's cell edit functionality based on the edit mode. You can choose the edit mode in the combo box editor.
 
